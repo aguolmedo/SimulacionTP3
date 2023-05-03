@@ -1,3 +1,5 @@
+using System.Data.SqlTypes;
+
 namespace _2PoliticasStock
 {
     internal static class Program
@@ -12,6 +14,7 @@ namespace _2PoliticasStock
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
+            
         }
     }
 }
