@@ -12,7 +12,7 @@ namespace _2PoliticasStock
             InitializeComponent();
             textBoxCantPedido.Visible = false;
             labelCantidadPedido.Visible = false;
-
+            textBoxCantPedido.Text = "0";
             comboBoxPolitica.Items.Add("Politica A");
             comboBoxPolitica.Items.Add("Politica B");
 
@@ -97,7 +97,7 @@ namespace _2PoliticasStock
             if (!verificarTablaProbabilidades(dataGridViewDemanda)) MessageBox.Show($"Recorda que la suma de todas las probabilidades debe ser igual a 1. \nNo se puede ingresar numeros negativos.", "Error de validacion en la tabla Demanda", MessageBoxButtons.OK, MessageBoxIcon.Error);
             if (!verificarTablaProbabilidades(dataGridViewDemora)) MessageBox.Show($"Recorda que la suma de todas las probabilidades debe ser igual a 1. \nNo se puede ingresar numeros negativos.", "Error de validacion en la tabla Demora", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-            var formTablaSimulacion = new FormTablaSimulacion(TablaDemoraProbAC, TablaDemandaProbAC, ListaCosto, comboBoxPolitica.SelectedItem.ToString(), Convert.ToInt32(textBoxCantPedido.Text));
+            var formTablaSimulacion = new FormTablaSimulacion(TablaDemoraProbAC, TablaDemandaProbAC, ListaCosto, comboBoxPolitica.SelectedItem.ToString(), Convert.ToInt32(textBoxCantPedido.Text), Convert.ToInt32(textBoxCantDias.Text), Convert.ToInt32(textBoxMostrarDesde.Text), Convert.ToInt32(textBoxCantAMostrar.Text));
 
             formTablaSimulacion.Show();
 

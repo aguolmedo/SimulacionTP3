@@ -17,12 +17,14 @@ namespace _2PoliticasStock
         private Dictionary<string, string> _tablaProbDemandaAC;
         private Dictionary<int, double> _tablaCosto = new Dictionary<int, double>();
 
-        private Random _rndDemanda;
+        private Random _generadorRndDemanda;
+        private int _rndDemanda;
         private int _demanda;
 
         private bool _seEfectuaPedido;
 
-        private Random _rndDemora;
+        private Random _generadorRndDemora;
+        private int _rndDemora;
         private int _demora;
 
         private int _stock;
@@ -37,13 +39,18 @@ namespace _2PoliticasStock
 
         private string _politica;
 
+        private int _dia;
+        private int _cantDias;
+        private int _cantAMostrar;
+        private int _mostrarDesde;
 
 
 
 
 
 
-        public FormTablaSimulacion(Dictionary<string, string> tablaProbDemoraAC, Dictionary<string, string> tablaProbDemandaAC, double[] listaCosto, string politica, int cantPedido)
+
+        public FormTablaSimulacion(Dictionary<string, string> tablaProbDemoraAC, Dictionary<string, string> tablaProbDemandaAC, double[] listaCosto, string politica, int cantPedido, int cantDias, int mostrarDesde, int cantAMostrar)
         {
 
             int[] listaCantidadesCosto = new int[] { 100, 200, int.MaxValue };
@@ -51,14 +58,19 @@ namespace _2PoliticasStock
             for (int i = 0; i < 3; i++) {
                 _tablaCosto.Add(listaCantidadesCosto[i], listaCosto[i]);
             }
-           
-            
-            _rndDemanda = new Random();
-            _rndDemora = new Random();
+
+
+            _generadorRndDemanda = new Random();
+            _generadorRndDemora = new Random();
             _costoTotalAcumulado = 0;
             _stock = 20;
             _politica = politica;
             _cantPedido = cantPedido;
+
+            _dia = 0;
+            _cantDias = cantDias;
+            _cantAMostrar = cantAMostrar;
+            _mostrarDesde = mostrarDesde; 
 
 
             _cantPedido = cantPedido;
@@ -66,6 +78,20 @@ namespace _2PoliticasStock
             _tablaProbDemoraAC = tablaProbDemoraAC;
             InitializeComponent();
         }
+
+
+        public void Simular() {
+
+            for (int i = 0; i < _cantDias; i++) {
+                _dia = i;
+                _rndDemanda = _generadorRndDemanda.Next();
+            
+            }
+
+        
+        
+        }
+
 
 
 

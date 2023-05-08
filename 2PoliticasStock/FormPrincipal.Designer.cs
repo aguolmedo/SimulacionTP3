@@ -42,9 +42,9 @@
             label3 = new Label();
             groupBoxParametros = new GroupBox();
             labelCantMostrar = new Label();
-            textBox3 = new TextBox();
-            textBox2 = new TextBox();
-            textBox1 = new TextBox();
+            textBoxCantDias = new TextBox();
+            textBoxCantAMostrar = new TextBox();
+            textBoxMostrarDesde = new TextBox();
             labelMostrar = new Label();
             label1 = new Label();
             buttonSimular = new Button();
@@ -179,9 +179,9 @@
             // groupBoxParametros
             // 
             groupBoxParametros.Controls.Add(labelCantMostrar);
-            groupBoxParametros.Controls.Add(textBox3);
-            groupBoxParametros.Controls.Add(textBox2);
-            groupBoxParametros.Controls.Add(textBox1);
+            groupBoxParametros.Controls.Add(textBoxCantDias);
+            groupBoxParametros.Controls.Add(textBoxCantAMostrar);
+            groupBoxParametros.Controls.Add(textBoxMostrarDesde);
             groupBoxParametros.Controls.Add(labelMostrar);
             groupBoxParametros.Controls.Add(label1);
             groupBoxParametros.Location = new Point(300, 66);
@@ -200,26 +200,26 @@
             labelCantMostrar.TabIndex = 5;
             labelCantMostrar.Text = "Cantidad a mostrar";
             // 
-            // textBox3
+            // textBoxCantDias
             // 
-            textBox3.Location = new Point(173, 34);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(74, 27);
-            textBox3.TabIndex = 4;
+            textBoxCantDias.Location = new Point(173, 34);
+            textBoxCantDias.Name = "textBoxCantDias";
+            textBoxCantDias.Size = new Size(74, 27);
+            textBoxCantDias.TabIndex = 4;
             // 
-            // textBox2
+            // textBoxCantAMostrar
             // 
-            textBox2.Location = new Point(173, 106);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(74, 27);
-            textBox2.TabIndex = 3;
+            textBoxCantAMostrar.Location = new Point(173, 106);
+            textBoxCantAMostrar.Name = "textBoxCantAMostrar";
+            textBoxCantAMostrar.Size = new Size(74, 27);
+            textBoxCantAMostrar.TabIndex = 3;
             // 
-            // textBox1
+            // textBoxMostrarDesde
             // 
-            textBox1.Location = new Point(173, 70);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(74, 27);
-            textBox1.TabIndex = 2;
+            textBoxMostrarDesde.Location = new Point(173, 70);
+            textBoxMostrarDesde.Name = "textBoxMostrarDesde";
+            textBoxMostrarDesde.Size = new Size(74, 27);
+            textBoxMostrarDesde.TabIndex = 2;
             // 
             // labelMostrar
             // 
@@ -295,9 +295,9 @@
         private GroupBox groupBoxParametros;
         private Label label1;
         private Label labelCantMostrar;
-        private TextBox textBox3;
-        private TextBox textBox2;
-        private TextBox textBox1;
+        private TextBox textBoxCantDias;
+        private TextBox textBoxCantAMostrar;
+        private TextBox textBoxMostrarDesde;
         private Label labelMostrar;
         private Button buttonSimular;
         private DataGridView dataGridViewDemandaProbAC;
