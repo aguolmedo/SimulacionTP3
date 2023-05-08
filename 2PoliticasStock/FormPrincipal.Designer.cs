@@ -253,7 +253,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(820, 692);
+            ClientSize = new Size(787, 692);
             Controls.Add(buttonSimular);
             Controls.Add(groupBoxParametros);
             Controls.Add(label3);
@@ -300,5 +300,6 @@
         private TextBox textBox1;
         private Label labelMostrar;
         private Button buttonSimular;
+        private DataGridView dataGridViewDemandaProbAC;
     }
 }

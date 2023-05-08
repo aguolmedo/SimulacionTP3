@@ -1,9 +1,12 @@
-using System.Windows.Forms;
-
 namespace _2PoliticasStock
 {
     public partial class FormPrincipal : Form
     {
+
+        private Dictionary<string, string> TablaDemoraProbAC;
+        private Dictionary<string, string> TablaDemandaProbAC;
+        private double[] ListaCosto;
+
         public FormPrincipal()
         {
             InitializeComponent();
@@ -46,14 +49,23 @@ namespace _2PoliticasStock
             dataGridView.ColumnCount = filaSuperior.Length + 1;
             dataGridView.RowCount = 2;
 
+            Dictionary<string, string> tablaAc = new Dictionary<string, string>();
+            double probAC = 0.0;
+
             for (int i = 1; i < dataGridView.ColumnCount; i++)
             {
 
                 dataGridView[i, 0].Value = filaSuperior[i - 1];
                 dataGridView[i, 0].ReadOnly = true;
                 dataGridView[i, 0].Style.BackColor = Color.Gray;
+
+
                 dataGridView[i, 1].Value = filaInferior[i - 1];
                 dataGridView[i, 1].ValueType = typeof(double);
+                probAC = probAC + (double)dataGridView[i, 1].Value;
+                probAC = Math.Round(probAC, 2);
+                tablaAc.Add(dataGridView[i, 0].Value.ToString(), probAC.ToString());
+                if (dataGridView.Name == dataGridViewCosto.Name) { ListaCosto = filaInferior; }
             }
             dataGridView[0, 0].Value = header[0];
             dataGridView[0, 0].ReadOnly = true;
@@ -62,10 +74,13 @@ namespace _2PoliticasStock
             dataGridView[0, 1].ReadOnly = true;
             dataGridView[0, 1].Style.BackColor = Color.Gray;
 
+            if (dataGridView.Name == dataGridViewDemanda.Name) { TablaDemandaProbAC = tablaAc; }
+            if (dataGridView.Name == dataGridViewDemora.Name) { TablaDemoraProbAC = tablaAc; }
 
         }
 
-        private bool verificarTablaProbabilidades(DataGridView dataGridView) {
+        private bool verificarTablaProbabilidades(DataGridView dataGridView)
+        {
 
             var probabilidadAC = 0.0;
             for (int i = 1; i < dataGridView.ColumnCount; i++)
@@ -75,12 +90,16 @@ namespace _2PoliticasStock
                 if ((double)dataGridView[i, 1].Value < 0) return false;
             }
             if (probabilidadAC == 1.0) { return true; }
-            return false; 
+            return false;
         }
         private void buttonSimular_Click(object sender, EventArgs e)
         {
             if (!verificarTablaProbabilidades(dataGridViewDemanda)) MessageBox.Show($"Recorda que la suma de todas las probabilidades debe ser igual a 1. \nNo se puede ingresar numeros negativos.", "Error de validacion en la tabla Demanda", MessageBoxButtons.OK, MessageBoxIcon.Error);
             if (!verificarTablaProbabilidades(dataGridViewDemora)) MessageBox.Show($"Recorda que la suma de todas las probabilidades debe ser igual a 1. \nNo se puede ingresar numeros negativos.", "Error de validacion en la tabla Demora", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            var formTablaSimulacion = new FormTablaSimulacion(TablaDemoraProbAC, TablaDemandaProbAC, ListaCosto, comboBoxPolitica.SelectedItem.ToString(), Convert.ToInt32(textBoxCantPedido.Text));
+
+            formTablaSimulacion.Show();
 
         }
     }
