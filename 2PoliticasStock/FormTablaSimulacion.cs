@@ -179,8 +179,16 @@ namespace _2PoliticasStock
 
                 if (vectorEstadoAnterior is not null)
                 {
-                    vectorEstadoActual = new VectorEstado(dia, demanda, vectorEstadoAnterior.stock, demora, vectorEstadoAnterior.diaLlegadaPedido, seEfectuaPedido, vectorEstadoAnterior.cantPedido, costoUnitario);
 
+                    if (seEfectuaPedido)
+                    {
+                        vectorEstadoActual = new VectorEstado(dia, demanda, vectorEstadoAnterior.stock, demora, diaLlegadaPedido, seEfectuaPedido, cantPedido, costoUnitario);
+
+                    }
+                    else
+                    {
+                        vectorEstadoActual = new VectorEstado(dia, demanda, vectorEstadoAnterior.stock, demora, vectorEstadoAnterior.diaLlegadaPedido, seEfectuaPedido, cantPedido, costoUnitario);
+                    }
 
                     if (vectorEstadoAnterior.diaLlegadaPedido == vectorEstadoActual.dia) {
 
