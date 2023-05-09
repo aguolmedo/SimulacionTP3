@@ -18,31 +18,25 @@ namespace _2PoliticasStock
         private Dictionary<int, double> _tablaCosto = new Dictionary<int, double>();
 
         private Random _generadorRndDemanda;
-        private double _rndDemanda;
-        private int _demanda;
+        public double _rndDemanda;
 
-        private bool _seEfectuaPedido;
 
         private Random _generadorRndDemora;
-        private double _rndDemora;
-        private int _demora;
+        public double _rndDemora;
 
-        private int _stock;
 
         private int _costoAlmacenamiento = 3;
         private int _costoRuptura = 4;
 
-        private int _cantPedido;
-        private int _costoUnitario;
-        private int _costoTotal;
-        private int _costoTotalAcumulado;
-
         private string _politica;
 
-        private int _dia;
+        private int _cantPedido;
         private int _cantDias;
         private int _cantAMostrar;
         private int _mostrarDesde;
+
+        public VectorEstado? vectorEstadoAnterior;
+        public VectorEstado? vectorEstadoActual;
 
 
 
@@ -63,18 +57,16 @@ namespace _2PoliticasStock
 
             _generadorRndDemanda = new Random();
             _generadorRndDemora = new Random();
-            _costoTotalAcumulado = 0;
-            _stock = 20;
-            _politica = politica;
-            _cantPedido = cantPedido;
+           
 
-            _dia = 0;
+            _politica = politica;
+
             _cantDias = cantDias;
             _cantAMostrar = cantAMostrar;
             _mostrarDesde = mostrarDesde;
-
-
             _cantPedido = cantPedido;
+
+
             _tablaProbDemandaAC = tablaProbDemandaAC;
             _tablaProbDemoraAC = tablaProbDemoraAC;
             InitializeComponent();
@@ -84,37 +76,153 @@ namespace _2PoliticasStock
         public void Simular()
         {
 
-            for (int i = 0; i < _cantDias; i++)
+            for (int i = 1; i <= _cantDias; i++)
             {
-
-                _dia = i;
+                
+                var dia = i;
+                int demanda = 0, demora = 0;
                 _rndDemanda = _generadorRndDemanda.NextDouble();
 
                 foreach (var value in _tablaProbDemandaAC.Keys)
                 {
                     if (_rndDemanda < Convert.ToDouble(_tablaProbDemandaAC[value]))
                     {
-                        _demanda = Convert.ToInt32(value);
+                        demanda = Convert.ToInt32(value);
                         break;
                     }
                 }
 
+              
+
+
+                int cantPedido = 0;
+                bool seEfectuaPedido =  false;
+                int demandaAC;
                 switch (_politica) {
 
                     case "Politica A":
+                       
+
+                        if (dia == 1 | dia % 7 == 0) {
+                            seEfectuaPedido = true;
+                            cantPedido = _cantPedido;
+                            break;
+                        };
+
+                        demandaAC = 0;
+                        seEfectuaPedido = false;
+
+
+
                         break;
                     case "Politica B":
+                        demandaAC = 0;
+
+
+                        if (dia == 1)
+                        {
+                            cantPedido = _cantPedido;
+                            seEfectuaPedido = false;
+                            demandaAC = 0;
+                            break;
+                        }
+                        if (dia % 10 == 0)
+                        {
+                            seEfectuaPedido = true;
+                            cantPedido = demandaAC;
+                            demandaAC = 0;
+                            break;
+                        }
+
+                        cantPedido = 0;
+                        seEfectuaPedido = false;
+                        demandaAC = vectorEstadoAnterior.demandaAC + demanda;
                         break;
-
-
-
-
                 }
 
 
 
+                int costoUnitario = 0;
+                int diaLlegadaPedido = 0;
+                if (seEfectuaPedido)
+                {
+                    _rndDemora = _generadorRndDemora.NextDouble();
+
+                    foreach (var value in _tablaProbDemoraAC.Keys)
+                    {
+                        if (_rndDemora < Convert.ToDouble(_tablaProbDemoraAC[value]))
+                        {
+                            demora = Convert.ToInt32(value);
+                            diaLlegadaPedido = dia + demora;
+                            break;
+                        }
+                    }
+
+                    foreach (var value in _tablaCosto.Keys)
+                    {
+                        if (_cantPedido <= value)
+                        {
+                            costoUnitario = Convert.ToInt32(_tablaCosto[value]);
+                            break;
+                        }
+                    }
 
 
+                }
+
+                if (vectorEstadoAnterior is null)
+                {
+                    vectorEstadoActual = new VectorEstado(dia, demanda,0, demora, diaLlegadaPedido, seEfectuaPedido, cantPedido, costoUnitario);
+                }
+               
+                
+
+                if (vectorEstadoAnterior is not null)
+                {
+                    vectorEstadoActual = new VectorEstado(dia, demanda, vectorEstadoAnterior.stock, demora, vectorEstadoAnterior.diaLlegadaPedido, seEfectuaPedido, vectorEstadoAnterior.cantPedido, costoUnitario);
+
+
+                    if (vectorEstadoAnterior.diaLlegadaPedido == vectorEstadoActual.dia) {
+
+                        vectorEstadoActual.stock = vectorEstadoAnterior.stock + vectorEstadoAnterior.cantPedido;
+                    }    
+                  
+                }
+                
+                vectorEstadoActual.stock -= demanda;
+                
+
+                if (vectorEstadoActual.stock < 0) 
+                {
+                    vectorEstadoActual.costoRuptura = Math.Abs(vectorEstadoActual.stock) * _costoRuptura;
+                    vectorEstadoActual.stock = 0;
+                }
+
+                vectorEstadoActual.costoAlmacenamiento = vectorEstadoActual.stock * _costoAlmacenamiento;
+
+                vectorEstadoActual.costoTotal = vectorEstadoActual.costoAlmacenamiento + vectorEstadoActual.costoRuptura;
+
+
+                if (vectorEstadoActual.seEfectuaPedido) {
+                    vectorEstadoActual.costoTotal += (vectorEstadoActual.costoUnitario * vectorEstadoActual.cantPedido);
+
+                }
+
+                if (vectorEstadoAnterior is not null)
+                {
+                    vectorEstadoActual.costoTotalAC = vectorEstadoActual.costoTotal + vectorEstadoAnterior.costoTotalAC;
+                }
+                else {
+                    vectorEstadoActual.costoTotalAC = vectorEstadoActual.costoTotal;
+                }
+
+
+                vectorEstadoAnterior = vectorEstadoActual;
+
+                
+
+
+                vectorEstadoActual = null;
 
 
             }
