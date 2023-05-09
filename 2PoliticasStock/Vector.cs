@@ -31,35 +31,33 @@ namespace _2PoliticasStock
 
         public int cantPedido;
 
-        public int costoUnitario;
-
         public int costoPedido;
 
         public int costoTotal;
 
         public int costoRuptura;
-    
+
         public int costoAlmacenamiento;
 
         public int costoTotalAC;
 
 
-        public VectorEstado(int dia, int demanda,int stock,  int demora,int diaLLegadaPedido,bool seEfectuaPedido, int cantPedido, int costoUnitario)
+        public VectorEstado(int dia, int demanda,int demandaAC, int stock, int demora, int diaLLegadaPedido, bool seEfectuaPedido, int cantPedido, int costo)
         {
             this.dia = dia;
             this.costoTotalAC = 0;
             this.stock = stock;
-            this.seEfectuaPedido  = seEfectuaPedido;
+            this.seEfectuaPedido = seEfectuaPedido;
             this.diaLlegadaPedido = diaLLegadaPedido;
             this.demanda = demanda;
+            this.demandaAC = demandaAC;
             this.demora = demora;
             this.costoRuptura = 0;
             this.costoAlmacenamiento = 0;
             this.cantPedido = cantPedido;
-            this.costoUnitario = costoUnitario;
-            this.costoPedido = costoUnitario * cantPedido;
+            this.costoPedido = costo;
+
+
         }
-
-
     }
 }

@@ -76,6 +76,8 @@ namespace _2PoliticasStock
         public void Simular()
         {
 
+            
+
             for (int i = 1; i <= _cantDias; i++)
             {
                 
@@ -92,12 +94,15 @@ namespace _2PoliticasStock
                     }
                 }
 
-              
 
 
+                int demandaAC;
                 int cantPedido = 0;
                 bool seEfectuaPedido =  false;
-                int demandaAC;
+                if (dia != 1)
+                     demandaAC = vectorEstadoAnterior.demandaAC;
+                else
+                     demandaAC = 0;
                 switch (_politica) {
 
                     case "Politica A":
@@ -116,13 +121,10 @@ namespace _2PoliticasStock
 
                         break;
                     case "Politica B":
-                        demandaAC = 0;
-
-
                         if (dia == 1)
                         {
-                            cantPedido = _cantPedido;
-                            seEfectuaPedido = false;
+                            cantPedido = 200;
+                            seEfectuaPedido = true;
                             demandaAC = 0;
                             break;
                         }
@@ -136,13 +138,13 @@ namespace _2PoliticasStock
 
                         cantPedido = 0;
                         seEfectuaPedido = false;
-                        demandaAC = vectorEstadoAnterior.demandaAC + demanda;
+                        demandaAC += demanda;
                         break;
                 }
 
 
 
-                int costoUnitario = 0;
+                int costo = 0;
                 int diaLlegadaPedido = 0;
                 if (seEfectuaPedido)
                 {
@@ -162,7 +164,7 @@ namespace _2PoliticasStock
                     {
                         if (_cantPedido <= value)
                         {
-                            costoUnitario = Convert.ToInt32(_tablaCosto[value]);
+                            costo = Convert.ToInt32(_tablaCosto[value]);
                             break;
                         }
                     }
@@ -172,7 +174,7 @@ namespace _2PoliticasStock
 
                 if (vectorEstadoAnterior is null)
                 {
-                    vectorEstadoActual = new VectorEstado(dia, demanda,0, demora, diaLlegadaPedido, seEfectuaPedido, cantPedido, costoUnitario);
+                    vectorEstadoActual = new VectorEstado(dia, demanda,demanda,20, demora, diaLlegadaPedido, seEfectuaPedido, cantPedido, costo);
                 }
                
                 
@@ -182,12 +184,12 @@ namespace _2PoliticasStock
 
                     if (seEfectuaPedido)
                     {
-                        vectorEstadoActual = new VectorEstado(dia, demanda, vectorEstadoAnterior.stock, demora, diaLlegadaPedido, seEfectuaPedido, cantPedido, costoUnitario);
+                        vectorEstadoActual = new VectorEstado(dia, demanda, demandaAC , vectorEstadoAnterior.stock, demora, diaLlegadaPedido, seEfectuaPedido, cantPedido, costo);
 
                     }
                     else
                     {
-                        vectorEstadoActual = new VectorEstado(dia, demanda, vectorEstadoAnterior.stock, demora, vectorEstadoAnterior.diaLlegadaPedido, seEfectuaPedido, cantPedido, costoUnitario);
+                        vectorEstadoActual = new VectorEstado(dia, demanda, demandaAC, vectorEstadoAnterior.stock, 0, vectorEstadoAnterior.diaLlegadaPedido, seEfectuaPedido, vectorEstadoAnterior.cantPedido, costo);
                     }
 
                     if (vectorEstadoAnterior.diaLlegadaPedido == vectorEstadoActual.dia) {
@@ -198,6 +200,7 @@ namespace _2PoliticasStock
                 }
                 
                 vectorEstadoActual.stock -= demanda;
+
                 
 
                 if (vectorEstadoActual.stock < 0) 
@@ -212,8 +215,7 @@ namespace _2PoliticasStock
 
 
                 if (vectorEstadoActual.seEfectuaPedido) {
-                    vectorEstadoActual.costoTotal += (vectorEstadoActual.costoUnitario * vectorEstadoActual.cantPedido);
-
+                    vectorEstadoActual.costoTotal += vectorEstadoActual.costoPedido;
                 }
 
                 if (vectorEstadoAnterior is not null)
@@ -225,23 +227,61 @@ namespace _2PoliticasStock
                 }
 
 
-                vectorEstadoAnterior = vectorEstadoActual;
+                if (_mostrarDesde <= dia && dia < (_mostrarDesde + _cantAMostrar) || dia == _cantDias)
+                {
 
-                
+                    dataGridViewSimulacion.Rows.Add(
+                    vectorEstadoActual.dia,
+                    _rndDemanda,
+                    vectorEstadoActual.demanda,
+                    vectorEstadoActual.demandaAC,
+                    vectorEstadoActual.seEfectuaPedido,
+                    vectorEstadoActual.diaLlegadaPedido,
+                    vectorEstadoActual.demora==0 ? 0 : _rndDemora,
+                    vectorEstadoActual.demora,
+                    vectorEstadoActual.stock,
+                    vectorEstadoActual.costoAlmacenamiento,
+                    vectorEstadoActual.costoRuptura,
+                    vectorEstadoActual.cantPedido,
+                    vectorEstadoActual.costoTotal,
+                    vectorEstadoActual.costoTotalAC);
+
+                }
+
+                vectorEstadoAnterior = vectorEstadoActual;
 
 
                 vectorEstadoActual = null;
 
+            };
+                
+            
+
 
             }
 
-
-
-        }
-
         private void FormTablaSimulacion_Load(object sender, EventArgs e)
         {
+            dataGridViewSimulacion.Columns.Add("dia", "Día");
+            dataGridViewSimulacion.Columns.Add("rndDemanda", "RND Demanda");
+            dataGridViewSimulacion.Columns.Add("demanda", "Demanda");
+            dataGridViewSimulacion.Columns.Add("DemandaAC", "Demanda AC");
+            dataGridViewSimulacion.Columns.Add("seEfectuoPedido", "¿Se efectuó pedido?");
+            dataGridViewSimulacion.Columns.Add("DiaLLegadaPedido", "Dia Llegada Pedido");
+            dataGridViewSimulacion.Columns.Add("rndDemora", "RND Demora");
+            dataGridViewSimulacion.Columns.Add("demora", "Demora");
+            dataGridViewSimulacion.Columns.Add("stock", "Stock");
+            dataGridViewSimulacion.Columns.Add("costoAlmacenamiento", "Costo Almacenamiento");
+            dataGridViewSimulacion.Columns.Add("costoRuptura", "Costo Ruptura");
+            dataGridViewSimulacion.Columns.Add("cantPedido", "Cantidad de Pedido");
+            dataGridViewSimulacion.Columns.Add("costoTotal", "Costo Total");
+            dataGridViewSimulacion.Columns.Add("costoTotalAC", "Costo Total AC");
+
+
             Simular();
         }
-    }
+
+    }    
+      
 }
+
