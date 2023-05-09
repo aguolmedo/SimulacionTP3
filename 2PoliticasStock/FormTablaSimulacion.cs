@@ -18,13 +18,13 @@ namespace _2PoliticasStock
         private Dictionary<int, double> _tablaCosto = new Dictionary<int, double>();
 
         private Random _generadorRndDemanda;
-        private int _rndDemanda;
+        private double _rndDemanda;
         private int _demanda;
 
         private bool _seEfectuaPedido;
 
         private Random _generadorRndDemora;
-        private int _rndDemora;
+        private double _rndDemora;
         private int _demora;
 
         private int _stock;
@@ -55,7 +55,8 @@ namespace _2PoliticasStock
 
             int[] listaCantidadesCosto = new int[] { 100, 200, int.MaxValue };
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3; i++)
+            {
                 _tablaCosto.Add(listaCantidadesCosto[i], listaCosto[i]);
             }
 
@@ -70,7 +71,7 @@ namespace _2PoliticasStock
             _dia = 0;
             _cantDias = cantDias;
             _cantAMostrar = cantAMostrar;
-            _mostrarDesde = mostrarDesde; 
+            _mostrarDesde = mostrarDesde;
 
 
             _cantPedido = cantPedido;
@@ -80,23 +81,51 @@ namespace _2PoliticasStock
         }
 
 
-        public void Simular() {
+        public void Simular()
+        {
 
-            for (int i = 0; i < _cantDias; i++) {
+            for (int i = 0; i < _cantDias; i++)
+            {
+
                 _dia = i;
-                _rndDemanda = _generadorRndDemanda.Next();
-            
+                _rndDemanda = _generadorRndDemanda.NextDouble();
+
+                foreach (var value in _tablaProbDemandaAC.Keys)
+                {
+                    if (_rndDemanda < Convert.ToDouble(_tablaProbDemandaAC[value]))
+                    {
+                        _demanda = Convert.ToInt32(value);
+                        break;
+                    }
+                }
+
+                switch (_politica) {
+
+                    case "Politica A":
+                        break;
+                    case "Politica B":
+                        break;
+
+
+
+
+                }
+
+
+
+
+
+
+
             }
 
-        
-        
+
+
         }
 
-
-
-
-
-
-
+        private void FormTablaSimulacion_Load(object sender, EventArgs e)
+        {
+            Simular();
+        }
     }
 }

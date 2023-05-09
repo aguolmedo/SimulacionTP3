@@ -50,6 +50,7 @@
             Controls.Add(dataGridViewSimulacion);
             Name = "FormTablaSimulacion";
             Text = "TablaSimulacion";
+            Load += FormTablaSimulacion_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridViewSimulacion).EndInit();
             ResumeLayout(false);
         }
